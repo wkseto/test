@@ -1,15 +1,24 @@
-// Constants
-const CHAOS_LOW_LEVEL = 60;
-const REGAL_LOW_LEVEL = 75;
-const WARNING_QUANTITY_THRESHOLD = 5;
+import {
+  CHAOS_LOW_LEVEL,
+  REGAL_LOW_LEVEL,
+  WARNING_QUANTITY_THRESHOLD
+} from '../constants/appConfig'
 
-const initializeResult = () => ({
+export interface UIResult {
+  chaosCount: number
+  regalCount: number
+  totalCount: number
+  isDanger: boolean
+  isWarning: boolean
+}
+
+const initializeResult = (): UIResult => ({
   chaosCount: 0,
   regalCount: 0,
   totalCount: 0,
   isDanger: false,
   isWarning: false
-});
+})
 
 const initializeResults = () => ({
   bodyArmour: initializeResult(),
@@ -23,7 +32,7 @@ const initializeResults = () => ({
 });
 
 exports.aggregateChaosRecipe = (stashItems) => {
-  const results = initializeResults();
+  const results = initializeResults()
 
   stashItems.forEach(stashItem => {
     if (stashItem.identified) return;
@@ -52,7 +61,7 @@ exports.aggregateChaosRecipe = (stashItems) => {
   });
 
   const globalTotalCount = Math.min(
-    ...Object.values(results).map(({totalCount}) => totalCount)
+    ...Object.values(results).map(({ totalCount }) => totalCount)
   );
 
   Object.keys(results).forEach((resultKey) => {
