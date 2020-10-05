@@ -23,7 +23,7 @@ export const fetchStashTabs = async ({ account, league, sessionId }:
 
   const { tabs } = JSON.parse(rawResponse)
 
-  const result: StashTab[] = tabs.map(tab => ({
+  const result: StashTab[] = tabs.map((tab: any) => ({
     id: tab.id,
     index: tab.i,
     name: tab.n,

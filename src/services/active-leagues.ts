@@ -10,11 +10,11 @@ export const fetchActiveLeagues = async () => {
 
   const leagues = JSON.parse(rawResponse)
 
-  return leagues.map(({ id }) => id)
+  return leagues.map(({ id }: { id: string }) => id)
 }
 
 // TODO: Error catch and typings
-export const fetchCurrentLeague = async (leagueSetting) => {
+export const fetchCurrentLeague = async (leagueSetting: any) => {
   const validLeagues = await fetchActiveLeagues()
 
   return validLeagues.includes(leagueSetting) ? leagueSetting : FALLBACK_LEAGUE

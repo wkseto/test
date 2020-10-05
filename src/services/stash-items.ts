@@ -1,3 +1,4 @@
+// @ts-ignore:
 import requestPromise from 'request-promise'
 
 import { fetchStashTabs } from './stash-tabs'
@@ -37,6 +38,7 @@ const fetchFromStashIndex = async (stashIndex: number,
 
   const { items: rawItems } = JSON.parse(rawResponse)
 
+  // @ts-ignore:
   const result: StashItem[] = rawItems.map(rawItem => ({
     itemLevel: rawItem.ilvl,
     type: getTypeFrom(rawItem),
@@ -55,9 +57,11 @@ export const fetchStashItems = async (stashIds: string[],
 
   const stashIndexes = stashTabs.filter(stashTab => stashIds.includes(stashTab.id)).map(stashTab => stashTab.index)
 
+  // @ts-ignore:
   let stashItems = []
   while (stashIndexes.length) {
     const newStashItems = await fetchFromStashIndex(stashIndexes.shift(), { account, league, sessionId })
+    // @ts-ignore:
     stashItems = stashItems.concat(newStashItems)
   }
 

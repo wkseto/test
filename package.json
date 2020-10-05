@@ -2,11 +2,13 @@
   "name": "chaos-recipe-overlay",
   "version": "1.1.0",
   "description": "An overlay that keeps track of your Path of Exile chaos recipe status.",
-  "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "debug": "electron . debug",
-    "dist": "rm -rf dist/ && electron-builder --x64 --windows portable"
+    "build": "tsc",
+    "watch": "tsc -w",
+    "postbuild": "npm run copy-files",
+    "lint": "tslint -c tslint.json -p tsconfig.json",
+    "start": "npm run build && npm run copy-files && electron ./dist/main.js",
+    "copy-files": "copyfiles -V -f ./src/ui/**/*.html ./dist/ui/"
   },
   "build": {
     "win": {
@@ -26,8 +28,10 @@
   "author": "Pascal Boutin <contact@pboutin.net>",
   "license": "MIT",
   "devDependencies": {
+    "@types/request-promise": "^4.1.46",
     "@typescript-eslint/eslint-plugin": "^4.3.0",
     "@typescript-eslint/parser": "^4.3.0",
+    "copyfiles": "^2.4.0",
     "electron": "^9.1.1",
     "electron-builder": "21.2.0",
     "eslint": "^7.10.0",
@@ -37,7 +41,8 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.21.3",
-    "eslint-plugin-react-hooks": "^4.1.2"
+    "eslint-plugin-react-hooks": "^4.1.2",
+    "typescript": "^4.0.3"
   },
   "dependencies": {
     "@types/electron-settings": "^3.1.1",

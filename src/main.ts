@@ -1,15 +1,16 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, BrowserWindowConstructorOptions, ipcMain } from 'electron'
 import settings from 'electron-settings'
+import * as path from 'path'
 
-import { DEVTOOL_OPTIONS } from './src/constants/dev'
-import { OVERLAY_SIZE } from './src/constants/appConfig'
+import { DEVTOOL_OPTIONS } from './constants/dev'
+import { OVERLAY_SIZE } from './constants/appConfig'
 
 let overlayWindow: BrowserWindow
-let settingsWindow
-let debug = process.argv[2] === 'debug'
+let settingsWindow: BrowserWindow
+let debug = true //process.argv[2] === 'debug'
 
 function createOverlayWindow() {
-  const windowOptions = {
+  const windowOptions: BrowserWindowConstructorOptions = {
     height: 70,
     width: 450,
     alwaysOnTop: true,
@@ -22,22 +23,24 @@ function createOverlayWindow() {
   }
 
   if (settings.has('overlay.size')) {
+    // @ts-ignore:
     const { height, width } = OVERLAY_SIZE[settings.get('overlay.size')]
     windowOptions.height = height
     windowOptions.width = width
   }
 
   if (settings.has('position')) {
-    windowOptions.x = settings.get('position.x')
-    windowOptions.y = settings.get('position.y')
+    windowOptions.x = Number(settings.get('position.x'))
+    windowOptions.y = Number(settings.get('position.y'))
   }
 
   overlayWindow = new BrowserWindow(windowOptions)
 
-  overlayWindow.loadFile('./src/ui/overlay.html')
+  overlayWindow.loadFile('./ui/overlay.html')
 
   overlayWindow.setMenu(null)
 
+  // @ts-ignore:
   overlayWindow.on('closed', () => overlayWindow = null)
 
   overlayWindow.on('move', () => {
@@ -54,8 +57,8 @@ function createSettingsWindow() {
   settingsWindow = new BrowserWindow({
     width: 400,
     height: 600,
-    x: settings.get('position.x'),
-    y: settings.get('position.y'),
+    x: Number(settings.get('position.x')),
+    y: Number(settings.get('position.y')),
     modal: true,
     alwaysOnTop: true,
     webPreferences: {
@@ -63,11 +66,13 @@ function createSettingsWindow() {
     }
   })
 
-  settingsWindow.loadFile('./src/ui/settings.html')
+  // settingsWindow.loadFile('./ui/settings.html')
+  settingsWindow.loadFile(path.join(__dirname, './ui/settings.html'))
 
   settingsWindow.setMenu(null)
 
   settingsWindow.on('closed', () => {
+    // @ts-ignore:
     overlayWindow.send('forceChaosRecipeRefresh')
     settingsWindow = null
   })
@@ -83,6 +88,7 @@ app.on('ready', () => {
 app.on('window-all-closed', () => app.quit())
 
 ipcMain.on('overlay-size-changed', () => {
+  // @ts-ignore:
   const { height, width } = OVERLAY_SIZE[settings.get('overlay.size')]
   overlayWindow.setBounds({ width, height })
 })

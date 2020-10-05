@@ -31,10 +31,10 @@ const initializeResults = () => ({
   hand: initializeResult()
 });
 
-exports.aggregateChaosRecipe = (stashItems) => {
+exports.aggregateChaosRecipe = (stashItems: any) => {
   const results = initializeResults()
 
-  stashItems.forEach(stashItem => {
+  stashItems.forEach((stashItem: any) => {
     if (stashItem.identified) return;
     if (!stashItem.isRare) return;
     if (stashItem.itemLevel < CHAOS_LOW_LEVEL) return;
@@ -46,6 +46,7 @@ exports.aggregateChaosRecipe = (stashItems) => {
     if (['ring', 'oneHand'].includes(stashItem.type)) resultValue = 0.5;
     if (['oneHand', 'twoHand'].includes(stashItem.type)) resultType = 'hand';
 
+    // @ts-ignore:
     let itemCounts = results[resultType];
 
     if (stashItem.itemLevel < REGAL_LOW_LEVEL) {
@@ -56,6 +57,7 @@ exports.aggregateChaosRecipe = (stashItems) => {
   });
 
   Object.keys(results).forEach((resultKey) => {
+    // @ts-ignore:
     const result = results[resultKey];
     result.totalCount = Math.floor(result.chaosCount + result.regalCount);
   });
@@ -65,12 +67,14 @@ exports.aggregateChaosRecipe = (stashItems) => {
   );
 
   Object.keys(results).forEach((resultKey) => {
+    // @ts-ignore:
     const result = results[resultKey];
 
     result.isDanger = result.totalCount === globalTotalCount;
     result.isWarning = (result.totalCount - WARNING_QUANTITY_THRESHOLD) <= globalTotalCount;
   });
 
+  // @ts-ignore:
   results._meta = {
     totalCount: globalTotalCount
   };
